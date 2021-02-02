@@ -1,13 +1,23 @@
 set shiftwidth=4 tabstop=4 expandtab tw=80
 syntax enable
 set number cursorline
+set laststatus=2
 filetype indent on
 set incsearch hlsearch
+set undodir=~/.vim/undo
+set undofile
 
 "GUI
 set guifont=Monospac821_BT:h10:cANSI:qDRAFT
-colo PaperColor
 set background=dark
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default': {
+  \       'transparent_background': 1
+  \     }
+  \   }
+  \ }
+colo PaperColor
 
 "Save the file with Ctrl+s (requires the file to be named)
 noremap <C-s> <Esc>:update<CR>
@@ -47,30 +57,24 @@ endf
 noremap <A-A> <Esc>:call AutoComp()<CR>
 
 "Tab navigation DOES NOT WORK
-nnoremap <C-S-Tab> :tabprevious<CR>
-nnoremap <C-Tab> :tabnext<CR>
-nnoremap <C-t> :tabnew<CR>
-inoremap <C-S-Tab> <Esc>:tabprevious<CR>gi
-inoremap <C-Tab> <Esc>:tabnext<CR>gi
-inoremap <C-t> <Esc>:tabnew<CR>
+"nnoremap <C-S-Tab> :tabprevious<CR>
+"nnoremap <C-Tab> :tabnext<CR>
+"nnoremap <C-t> :tabnew<CR>
+"inoremap <C-S-Tab> <Esc>:tabprevious<CR>gi
+"inoremap <C-Tab> <Esc>:tabnext<CR>gi
+"inoremap <C-t> <Esc>:tabnew<CR>
 
 "Split screen navigation
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-"Undo mapping
-noremap <C-Z> :undo<CR>
-inoremap <C-Z> <Esc>:undo<CR>i
-noremap <C-S-Z> :redo<CR>
-inoremap <C-S-Z> <Esc>:redo<CR>i
+""nnoremap <C-J> <C-W><C-J>
+""nnoremap <C-K> <C-W><C-K>
+""nnoremap <C-L> <C-W><C-L>
+""nnoremap <C-H> <C-W><C-H>
 
 "Shift lines
-nnoremap <C-S-Down> :m+<CR>==
-nnoremap <C-S-Up> :m-2<CR>==
-inoremap <C-S-Down> <Esc>:m+<CR>==gi
-inoremap <C-S-Up> <Esc>:m-2<CR>==gi
+""nnoremap <C-S-J> :m+<CR>==
+""nnoremap <C-S-K> :m-2<CR>==
+""inoremap <C-S-J> <Esc>:m+<CR>==gi
+""inoremap <C-S-K> <Esc>:m-2<CR>==gi
 
 "Time to learn how to navigate vim without the arrows
 noremap <Right> <NOP>
