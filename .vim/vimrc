@@ -1,0 +1,107 @@
+"Use spaces, tab size of 4, text width of 80
+set shiftwidth=4 softtabstop=4 expandtab tw=80
+syntax enable
+set nu rnu cul "line numbers, relative nums, cursor line highlight
+set laststatus=2 "status line always on
+filetype indent on
+set incsearch hlsearch "search highlighting settings
+
+"Directories for swp, backup, and undo files
+"TODO: use mkdir() to create dirs if they don't exist
+set directory^=~/.vim/swp/
+set backupdir^=~/.vim/backup/
+set undodir^=~/.vim/undo/
+set undofile
+
+"GUI
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
+colo onehalfdark
+hi Normal guibg=NONE ctermbg=NONE
+
+"Save the file with Ctrl+s (requires the file to be named)
+"noremap <C-s> <Esc>:update<CR>
+"inoremap <C-s> <Esc>:update<CR>a
+
+"Auto complete of paranthesis, brackets, etc.
+"inoremap ( ()<Esc>i
+"inoremap [ []<Esc>i
+"inoremap " ""<Esc>i
+"inoremap ' ''<Esc>i
+"inoremap { {<CR>}<Esc>O
+
+"Remove trailing white space by pressing <F6>
+""nnoremap <F6> :%s/\s\+$//e<CR>
+
+"Allow toggling of the auto complete shortcuts
+"TODO: fix the function and shortcut to make this work
+""let autocomp = 0
+""function AutoComp()
+""    if g:autocomp
+""        inoremap ( ()<Esc>i
+""        inoremap [ []<Esc>i
+""        inoremap " ""<Esc>i
+""        inoremap ' ''<Esc>i
+""        inoremap { {<CR>}<Esc>O
+""        echom "Auto complete is on"
+""        let g:autocomp = 0
+""    else
+""        iunmap (
+""        iunmap [
+""        iunmap "
+""        iunmap '
+""        iunmap {
+""        echom "Auto complete is off"
+""        let g:autocomp = 1
+""    endif
+""endf
+""noremap <C-A-A> <Esc>:call AutoComp()<CR>
+
+"Time to learn how to navigate vim without the arrows
+noremap <Right> <NOP>
+noremap <Left> <NOP>
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+
+"Distraction-free / focus mode
+"Activate using <Leader>z ==> \z
+"Taken from https://zserge.com/posts/vim-distraction-free/
+
+let g:dfm_width = 80 "absolute width or percentage, like 0.7
+let g:dfm_height = 0.8 
+let s:dfm_enabled = 0
+
+function! ToggleDistractionFreeMode()
+  let l:w = g:dfm_width > 1 ? g:dfm_width : (winwidth('%') * g:dfm_width)
+  let l:margins = {
+	\ "l": ("silent leftabove " . float2nr((winwidth('%') - l:w) / 2 - 1) . " vsplit new"),
+	\ "h": ("silent rightbelow " . float2nr((winwidth('%') - l:w) / 2 - 1) . " vsplit new"),
+	\ "j": ("silent leftabove " . float2nr(winheight('%') * (1 - g:dfm_height) / 2 - 1) . " split new"),
+	\ "k": ("silent rightbelow " . float2nr(winheight('%') * (1 - g:dfm_height) / 2 - 1) . " split new"),
+	\ }
+  if (s:dfm_enabled == 0)
+    let s:dfm_enabled = 1
+    for key in keys(l:margins)
+      execute l:margins[key] . " | wincmd " . key
+    endfor
+    for key in ['NonText', 'VertSplit', 'StatusLine', 'StatusLineNC']
+      execute 'hi ' . key . ' ctermfg=bg ctermbg=bg cterm=NONE'
+    endfor
+    set wrap | set linebreak
+    map j gj
+    map k gk
+  else
+    let s:dfm_enabled = 0
+    for key in keys(l:margins)
+      execute "wincmd " . key . " | close "
+    endfor
+    set nowrap | set nolinebreak
+    unmap j
+    unmap k
+  endif
+endfunction
+
+nmap <silent> <Leader>z :call ToggleDistractionFreeMode()<CR>
