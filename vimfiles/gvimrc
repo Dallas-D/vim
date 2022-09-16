@@ -5,6 +5,7 @@ set nu rnu cul "line numbers, relative nums, cursor line highlight
 set laststatus=2 "status line always on
 filetype indent on
 set incsearch hlsearch "search highlighting settings
+set sb spr "split below & split right for new windows
 
 "Directories for swp, backup, and undo files
 "TODO: use mkdir() to create dirs if they don't exist
@@ -50,13 +51,13 @@ function! ToggleFocusMode()
     wincmd = "make center window 100 columns then redistribute space
     "make vertsplit lines less obvious
     hi VertSplit ctermbg=236 guibg=#282C34 ctermfg=239 guifg=#373C45
-    set laststatus=0 "hide status line and ruler
-    set noruler
+    set laststatus=0 "hide status line
     set guioptions-=r "right scroll bar
     set guioptions-=L "left scroll bar
     set guioptions-=m "menu bar
-    set wrap | set linebreak "make writing text more natural
-    set nornu "remove relative line numbers
+    "make writing text more natural
+    "remove relative line numbers & ruler
+    set wrap linebreak noruler nornu 
     "make up/down movements make more sense for wrapped text
     map j gj
     map k gk
@@ -66,12 +67,10 @@ function! ToggleFocusMode()
     set nowinfixwidth
     execute 'colorscheme ' . g:colors_name
     set laststatus=2
-    set ruler
     set guioptions+=r
     set guioptions+=L
     set guioptions+=m
-    set nowrap | set nolinebreak
-    set rnu
+    set nowrap nolinebreak ruler rnu 
     unmap j
     unmap k
   endif
