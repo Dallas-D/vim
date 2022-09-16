@@ -1,5 +1,5 @@
-"Use spaces, tab size of 4, text width of 80
-set shiftwidth=4 softtabstop=4 expandtab tw=80
+"Use spaces, tab size of 4, text width of 100
+set shiftwidth=4 softtabstop=4 expandtab tw=100
 syntax enable
 set nu rnu cul "line numbers, relative nums, cursor line highlight
 set laststatus=2 "status line always on
@@ -16,48 +16,64 @@ set undofile
 "GUI
 set bg=dark
 colo onehalfdark
-set guifont=Cascadia_Code_Light:h12:w300:cANSI:qDRAFT
+set guifont=Cascadia_Code_Light:h11:W300:cANSI:qDRAFT
+set guioptions-=T
+"set lsp=2 "linespacing
+"Should set menu & scrollbar to theme colors but doesn't
+"Might be used wrong
+"hi link Menu Normal
+"hi link Scrollbar Normal
+"hi Menu guibg=#282c34 guifg=#dcdfe4
+"hi Scrollbar guibg=#282c34 guifg=#dcdfe4
 
 "Save the file with Ctrl+s (requires the file to be named)
-noremap <C-s> <Esc>:update<CR>
-inoremap <C-s> <Esc>:update<CR>gi
+nnoremap <silent> <C-s> <Esc>:update<CR>
+inoremap <silent> <C-s> <Esc>:update<CR>gi
 
-"Distraction-free / focus mode
-"Activate using <Leader>z ==> \z
-"Taken from https://zserge.com/posts/vim-distraction-free/
+"Focus Mode
+"Activate using <F9>
+"Inspired by these:
+"   https://zserge.com/posts/vim-distraction-free/
+"   https://coderwall.com/p/4jrcfa/easy-focus-mode-in-vim
+"   https://www.laktek.com/2012/09/05/distraction-free-writing-with-vim/
 
-let g:dfm_width = 80 "absolute width or percentage, like 0.7
-let g:dfm_height = 0.8 
-let s:dfm_enabled = 0
+let g:fm_width = 100 + &numberwidth "center window will be 100 columns
+let s:fm_enabled = 0
 
-function! ToggleDistractionFreeMode()
-  let l:w = g:dfm_width > 1 ? g:dfm_width : (winwidth('%') * g:dfm_width)
-  let l:margins = {
-	\ "l": ("silent leftabove " . float2nr((winwidth('%') - l:w) / 2 - 1) . " vsplit new"),
-	\ "h": ("silent rightbelow " . float2nr((winwidth('%') - l:w) / 2 - 1) . " vsplit new"),
-	\ "j": ("silent leftabove " . float2nr(winheight('%') * (1 - g:dfm_height) / 2 - 1) . " split new"),
-	\ "k": ("silent rightbelow " . float2nr(winheight('%') * (1 - g:dfm_height) / 2 - 1) . " split new"),
-	\ }
-  if (s:dfm_enabled == 0)
-    let s:dfm_enabled = 1
-    for key in keys(l:margins)
-      execute l:margins[key] . " | wincmd " . key
-    endfor
-    for key in ['NonText', 'VertSplit', 'StatusLine', 'StatusLineNC']
-      execute 'hi ' . key . ' ctermfg=bg ctermbg=bg cterm=NONE'
-    endfor
-    set wrap | set linebreak
+function! ToggleFocusMode()
+  if (s:fm_enabled == 0)
+    let s:fm_enabled = 1
+    leftabove vnew | wincmd l "left margin
+    rightbelow vnew | wincmd h "right margin
+    set winfixwidth "make center window stay the same width
+    execute 'vert res ' . g:fm_width 
+    wincmd = "make center window 100 columns then redistribute space
+    "make vertsplit lines less obvious
+    hi VertSplit ctermbg=236 guibg=#282C34 ctermfg=239 guifg=#373C45
+    set laststatus=0 "hide status line and ruler
+    set noruler
+    set guioptions-=r "right scroll bar
+    set guioptions-=L "left scroll bar
+    set guioptions-=m "menu bar
+    set wrap | set linebreak "make writing text more natural
+    set nornu "remove relative line numbers
+    "make up/down movements make more sense for wrapped text
     map j gj
     map k gk
   else
-    let s:dfm_enabled = 0
-    for key in keys(l:margins)
-      execute "wincmd " . key . " | close "
-    endfor
+    let s:fm_enabled = 0
+    only
+    set nowinfixwidth
+    execute 'colorscheme ' . g:colors_name
+    set laststatus=2
+    set ruler
+    set guioptions+=r
+    set guioptions+=L
+    set guioptions+=m
     set nowrap | set nolinebreak
+    set rnu
     unmap j
     unmap k
   endif
-endfunction
-
-nmap <silent> <Leader>z :call ToggleDistractionFreeMode()<CR>
+endfunction 
+nnoremap <silent> <F9> :call ToggleFocusMode()<CR>
