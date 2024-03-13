@@ -8,9 +8,9 @@ set incsearch hlsearch "search highlighting settings
 
 "Directories for swp, backup, and undo files
 "TODO: use mkdir() to create dirs if they don't exist
-set directory^=~/.vim/swp/
-set backupdir^=~/.vim/backup/
-set undodir^=~/.vim/undo/
+set directory^=$HOME/.vim/swp/
+set backupdir^=$HOME/.vim/backup/
+set undodir^=$HOME/.vim/undo/
 set undofile
 
 "GUI
@@ -25,6 +25,11 @@ hi Normal guibg=NONE ctermbg=NONE
 "Save the file with Ctrl+s (requires the file to be named)
 "noremap <C-s> <Esc>:update<CR>
 "inoremap <C-s> <Esc>:update<CR>a
+
+"Copy to clipboard with \c (selection) or \C (whole file)
+"Needed for WSL2
+"noremap <Leader>c <Esc>:'<,'>w !clip.exe<CR><CR>
+"noremap <Leader>C <Esc>:w !clip.exe<CR><CR>
 
 "Auto complete of paranthesis, brackets, etc.
 "inoremap ( ()<Esc>i
